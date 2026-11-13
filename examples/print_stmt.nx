@@ -1,0 +1,24 @@
+// Print statements (both forms) + the print/println builtin functions
+print "A";
+print "B";
+println "";
+println "C";
+println "D", "E";
+
+var x = 10;
+var pi = 3.14;
+println "x =", x, "pi =", pi;
+println "sum:", x + 5;
+
+// parenthesized form — backwards compatible with the builtin function
+println("classic call form");
+println("multi", 1 + 2, true);
+
+// print without newline in loops
+for (var i = 1; i <= 3; i++) {
+    print "tick ";
+}
+println "";
+
+// builtin printf still works
+printf("formatted: %d %s\n", 42, "answer");

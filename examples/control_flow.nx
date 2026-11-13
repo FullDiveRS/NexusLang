@@ -1,0 +1,70 @@
+// Control flow: if/else, ternary, loops, foreach, switch, try/catch
+println("=== Control Flow ===");
+
+var score = 85;
+if (score >= 90) {
+    println("Grade: A");
+} else if (score >= 80) {
+    println("Grade: B");
+} else if (score >= 70) {
+    println("Grade: C");
+} else {
+    println("Grade: F");
+}
+
+var status = score >= 60 ? "Pass" : "Fail";
+println("Status: " + status);
+
+println("");
+println("Counting to 5:");
+for (var i = 1; i <= 5; i++) {
+    println("  Count: " + str(i));
+}
+
+println("");
+println("While loop:");
+var count = 0;
+while (count < 3) {
+    println("  Iteration " + str(count));
+    count++;
+}
+
+println("");
+println("Do-while:");
+var n = 0;
+do {
+    println("  n = " + str(n));
+    n++;
+} while (n < 3);
+
+println("");
+println("Foreach:");
+var fruits = ["apple", "banana", "cherry"];
+foreach (fruit in fruits) {
+    println("  Fruit: " + fruit);
+}
+
+println("");
+println("Switch (and break inside a switch inside a loop):");
+for (var d = 1; d <= 4; d++) {
+    switch (d) {
+        case 3:
+            print "  day 3 = Wednesday";
+            break;
+        default:
+            print "  day " + str(d);
+            break;
+    }
+    println("");
+}
+
+println("");
+println("Try-Catch:");
+try {
+    var x = 10;
+    var y = 0;
+    var result = x / y;
+    println("Result: " + str(result));
+} catch (error) {
+    println("  Caught: " + error);
+}

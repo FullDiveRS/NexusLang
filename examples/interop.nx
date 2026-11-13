@@ -1,0 +1,51 @@
+// Multi-language interop declarations
+println("=== Nexus Interop System ===");
+
+// C/C++ via P/Invoke
+#[DllImport("libc.so")]
+extern int c_add(a: int, b: int);
+
+// NASM object files (simulated operations — entry point names must match
+// the engine's known ops: add, sub, mul, div, xor, shl, ...)
+#[NasmImport("math_ops.obj")]
+extern int add(a: int, b: int);
+
+#[NasmImport("math_ops.obj")]
+extern int sub(a: int, b: int);
+
+// Java
+#[JavaImport("java.lang.Math")]
+extern double jsqrt(x: double);
+
+// Go (c-shared)
+#[GoImport("libgo.so")]
+extern int Add(a: int, b: int);
+
+// C# (reflection)
+#[CSharpImport("MyCSharpLib.dll")]
+extern int Compute(x: int);
+
+// VB.NET / F# / Python / Ruby declarations
+#[VbImport("MyVbLib.dll")]
+extern string GetMessage();
+
+#[FSharpImport("FSharpLib.dll")]
+extern int fib(n: int);
+
+#[PythonImport("math")]
+extern double py_pi();
+
+// Rust (C ABI — engine knows add/multiply/fibonacci)
+#[RustImport("librustlib.so")]
+extern int fibonacci(n: int);
+
+#[RubyImport("helper.rb")]
+extern string greet(name: string);
+
+println("All interop declarations loaded.");
+println("");
+println("NASM simulated calls:");
+println("  add(6, 7) = " + str(add(6, 7)));
+println("  sub(6, 7) = " + str(sub(6, 7)));
+println("Rust simulated call:");
+println("  fibonacci(10) = " + str(fibonacci(10)));

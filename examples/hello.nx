@@ -1,0 +1,18 @@
+// Hello World — basic variables, strings, arithmetic
+println("Hello, World from Nexus!");
+println("========================");
+
+var name = "Nexus";
+var version = 1.0;
+const YEAR = 2024;
+
+println("Language: " + name);
+println("Version: " + str(version));
+println("Year: " + str(YEAR));
+
+var a = 10;
+var b = 3;
+println("Sum: " + str(a + b));
+println("Product: " + str(a * b));
+println("Division: " + str(a / b));
+println("Modulo: " + str(a % b));

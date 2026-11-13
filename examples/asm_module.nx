@@ -1,0 +1,55 @@
+// ASM modules: labels become callable functions, data becomes properties,
+// registers persist across calls — each module is an isolated object
+var math = asm
+{
+    db greeting = "hello from asm"
+
+    math:
+        mov eax, ecx      // arg0
+        add eax, edx      // + arg1
+        ret
+
+    square:
+        mov eax, ecx
+        mul eax, ecx
+        ret
+}
+
+println(math);                          // <asm module math: ...>
+println(math.labels);                   // [math, square]
+println(math.greeting);                 // hello from asm
+
+println("math(3, 4) = "   + str(math.math(3, 4)));    // 7
+println("square(9) = "    + str(math.square(9)));     // 81
+
+// labels are first-class values
+var sq = math.square;
+println("sq(12) = " + str(sq(12)));                   // 144
+
+// stateful module: EAX persists between calls
+var accum = asm
+{
+    acc:
+        add eax, ecx     // running total lives in EAX
+        ret
+}
+accum.acc(5);
+accum.acc(10);
+println("accum = " + str(accum.acc(20)));             // 35
+
+// data labels are readable AND writable from Nexus
+var counter = asm
+{
+    db count = 0
+    bump:
+        mov eax, [count]
+        inc eax
+        mov [count], eax
+        ret
+}
+println(counter.count);      // 0
+counter.count = 41;          // Nexus writes into asm memory
+counter.bump();              // asm increments it
+println(counter.count);      // 42
+counter.bump();
+println("answer = " + str(counter.count));            // 43
