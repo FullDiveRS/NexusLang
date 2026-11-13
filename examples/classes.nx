@@ -1,0 +1,54 @@
+// OOP: classes, inheritance (extends), super(), this, static members
+class Animal {
+    var name: string;
+    var sound: string;
+
+    func init(name: string, sound: string) {
+        this.name = name;
+        this.sound = sound;
+    }
+
+    func speak() -> string {
+        return this.name + " says " + this.sound;
+    }
+}
+
+class Dog extends Animal {
+    func init(name: string) {
+        super(name, "Woof!");
+    }
+
+    func fetch() -> string {
+        return this.name + " fetches the ball!";
+    }
+}
+
+class Calculator {
+    static var operations: int = 0;
+
+    static func add(a: int, b: int) -> int {
+        operations = operations + 1;
+        return a + b;
+    }
+
+    static func multiply(a: int, b: int) -> int {
+        operations = operations + 1;
+        return a * b;
+    }
+
+    static func getOperations() -> int {
+        return operations;
+    }
+}
+
+println("=== OOP Demo ===");
+
+var dog = new Dog("Rex");
+println(dog.speak());
+println(dog.fetch());
+
+println("");
+println("Calculator operations: " + str(Calculator.getOperations()));
+println("3 + 5 = " + str(Calculator.add(3, 5)));
+println("4 * 6 = " + str(Calculator.multiply(4, 6)));
+println("Total operations: " + str(Calculator.getOperations()));

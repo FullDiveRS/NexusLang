@@ -1,0 +1,39 @@
+// Functions: params, returns, recursion, default arguments
+func add(a: int, b: int) -> int {
+    return a + b;
+}
+
+func multiply(x: int, y: int) -> int {
+    return x * y;
+}
+
+func greet(name: string) -> string {
+    return "Hello, " + name + "!";
+}
+
+func fibonacci(n: int) -> int {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+func factorial(n: int) -> int {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+// NOTE: the parameter is named `value` — `base` is a reserved word (super calls)
+func power(value: int, exp: int = 2) -> int {
+    var result = 1;
+    for (var i = 0; i < exp; i++) {
+        result = result * value;
+    }
+    return result;
+}
+
+println("add(5, 3) = " + str(add(5, 3)));
+println("multiply(4, 7) = " + str(multiply(4, 7)));
+println(greet("Nexus"));
+println("fibonacci(10) = " + str(fibonacci(10)));
+println("factorial(5) = " + str(factorial(5)));
+println("power(2, 10) = " + str(power(2, 10)));
+println("power(3) = " + str(power(3)));

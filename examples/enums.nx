@@ -1,0 +1,75 @@
+// enums.nx — enums with named constants AND real members (methods, typed fields)
+
+// Plain C#-style enum with explicit values
+enum Color
+{
+    Red = 1,
+    Green = 2,
+    Blue = 4
+}
+
+// The user's requested shape: an enum that also carries static methods
+// and typed static fields — an enum that behaves like a live class.
+enum Movement
+{
+    public static bool IsMoving;
+    public static string NameOfMovement;
+    public static int num;
+
+    public static void MoveForward(int steps, float speed)
+    {
+        NameOfMovement = "Forward";
+        IsMoving = true;
+        num = num + steps;
+        println("Moving forward " + str(steps) + " steps at speed " + str(speed) + " (total " + str(num) + ")");
+    }
+
+    public static void MoveBackward(int steps)
+    {
+        NameOfMovement = "Backward";
+        num = num - steps;
+        println("Moving backward " + str(steps) + " steps (total " + str(num) + ")");
+    }
+
+    public static void Stop()
+    {
+        IsMoving = false;
+        NameOfMovement = "Idle";
+        println("Stopped. State: " + NameOfMovement + ", total steps: " + str(num));
+    }
+}
+
+// --- constants ---
+println("Color.Red   = " + str(Color.Red));
+println("Color.Green = " + str(Color.Green));
+println("Color.Blue  = " + str(Color.Blue));
+println("Red|Green|Blue mask = " + str(Color.Red + Color.Green + Color.Blue));
+
+// --- enum members: typed static fields ---
+Movement.num = 0;
+Movement.IsMoving = false;
+
+// --- enum members: static methods ---
+Movement.MoveForward(3, 2.5);
+Movement.MoveForward(4, 1.5);
+Movement.MoveBackward(2);
+Movement.Stop();
+
+println("Movement.NameOfMovement = " + Movement.NameOfMovement);
+println("Movement.IsMoving = " + str(Movement.IsMoving));
+println("Movement.num = " + str(Movement.num));
+
+// switch over enum constants
+var mask = Color.Green;
+switch (mask)
+{
+    case Color.Red:
+        println("saw red");
+        break;
+    case Color.Green:
+        println("saw green");
+        break;
+    default:
+        println("saw something else");
+        break;
+}

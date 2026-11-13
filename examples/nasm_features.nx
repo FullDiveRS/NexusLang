@@ -1,0 +1,53 @@
+// NASM statement-level asm blocks: registers, labels, jumps, data definitions
+println("=== NASM Assembly Features ===");
+
+// registers
+asm {
+    mov eax, 5
+    mov ebx, 3
+    add eax, ebx
+}
+println("Assembly computed: 5 + 3 = 8");
+
+// labels + conditional jumps (bridge the result back into a Nexus variable)
+var total = 0;
+asm {
+    mov ecx, 5
+    mov eax, 0
+sum_loop:
+    add eax, ecx
+    dec ecx
+    cmp ecx, 0
+    jg sum_loop
+    mov total, eax
+}
+println("Assembly loop: sum 1..5 = " + str(total));
+
+// data definitions + pointer walk to count a string's length
+var length_count = 0;
+asm {
+    db msg = "Hello ASM"
+    mov eax, msg
+    mov length_count, 0
+next_char:
+    mov bl, [eax]
+    test bl, bl
+    jz finished
+    inc length_count
+    inc eax
+    jmp next_char
+finished:
+}
+println("String length via asm pointer walk: " + str(length_count));
+
+// calling a Nexus function from asm (fastcall: ecx, edx, ebx, esi → eax)
+func triple(x: int) -> int {
+    return x * 3;
+}
+var answer = 0;
+asm {
+    mov ecx, 7
+    call triple
+    mov answer, eax
+}
+println("asm -> nexus call: triple(7) = " + str(answer));

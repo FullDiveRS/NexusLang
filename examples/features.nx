@@ -1,0 +1,110 @@
+// features.nx — properties (get/set), operator overloads, delegates, events,
+// multi-declarators, string interpolation, ternary, ranges + foreach.
+
+delegate int Operation(int a, int b);
+delegate void Alert(string msg);
+
+// ---------- multi-declarators ----------
+var p, q = 2, r;
+p = 1; r = 3;
+println("p,q,r = " + str(p) + "," + str(q) + "," + str(r));
+
+// ---------- operator overloads + properties ----------
+class Vector
+{
+    var x = 0;
+    var y = 0;
+    var _tag = "tag:none";
+
+    func init(int px, int py)
+    {
+        x = px;
+        y = py;
+    }
+
+    operator +(other)  { return Vector(x + other.x, y + other.y); }
+    operator -(other)  { return Vector(x - other.x, y - other.y); }
+    operator *(scalar) { return Vector(x * scalar, y * scalar); }
+    operator ==(other) { return x == other.x && y == other.y; }
+    operator <(other)  { return x * x + y * y < other.x * other.x + other.y * other.y; }
+
+    // read-only computed property
+    var Length {
+        get { return sqrt(x * x + y * y); }
+    }
+
+    var Label {
+        get { return "(" + str(x) + ", " + str(y) + ")"; }
+    }
+
+    // property with a setter that transforms the stored value
+    var Tag {
+        get { return _tag; }
+        set { _tag = "tag:" + value; }
+    }
+}
+
+var a = Vector(1, 2);
+var b = Vector(3, 4);
+var c = a + b;
+println("a + b    = " + c.Label);
+println("b - a    = " + (b - a).Label);
+println("a * 3    = " + (a * 3).Label);
+println("a == a   = " + str(a == a));
+println("a == b   = " + str(a == b));
+println("a < b    = " + str(a < b));
+println("b.Length = " + str(b.Length));
+
+a.Tag = "left";
+println("a.Tag    = " + a.Tag);
+
+// ---------- delegates ----------
+var add = (int x, int y) => { return x + y; };
+var mul = (int x, int y) => { return x * y; };
+
+func Apply(Operation op, int p2, int q2)
+{
+    return op(p2, q2);
+}
+
+println("add(2,3)          = " + str(add(2, 3)));
+println("mul(2,3)          = " + str(mul(2, 3)));
+println("Apply(add, 10, 5) = " + str(Apply(add, 10, 5)));
+println("Apply(mul, 10, 5) = " + str(Apply(mul, 10, 5)));
+
+// ---------- events: subscribe, fire, unsubscribe ----------
+event Alert OnAlert;
+
+func HandleAlert(string msg) { println("[handler1] " + msg); }
+
+OnAlert += (string msg) => { println("[handler2] " + msg); };
+OnAlert += HandleAlert;
+OnAlert("system going down");
+OnAlert -= HandleAlert;
+println("-- after unsubscribe --");
+OnAlert("second alert");
+
+// ---------- string interpolation ----------
+var name = "Nexus";
+var version = 2;
+println($"Hello {name} v{version}! 2+2={2 + 2}, escaped braces: {{literal}}");
+
+// ---------- ternary ----------
+var score = 87;
+println("grade: " + (score >= 90 ? "A" : (score >= 80 ? "B" : "C")));
+
+// ---------- ranges + foreach (lists, strings) ----------
+foreach (var i in 1..5)
+{
+    print(i); print(" ");
+}
+println("");
+foreach (var letter in "abc")
+{
+    print(letter); print("/");
+}
+println("");
+
+var total = 0;
+foreach (var k in 1..10) { total = total + k; }
+println("sum 1..10 = " + str(total));

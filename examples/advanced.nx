@@ -1,0 +1,197 @@
+// advanced.nx — properties (get/set), operator overloading, delegates,
+// events, enums with methods & statics, lambdas, interpolated strings,
+// null-coalescing (??) and null-conditional (?.), typed declarations.
+
+println("=== Nexus Advanced Features ===");
+
+// ============================================================
+// 1. ENUM WITH METHODS AND STATIC FIELDS (Nexus extension)
+// ============================================================
+enum Movement
+{
+    Idle,
+    Walk,
+    Run,
+
+    public static bool IsMoving;
+    public static string NameOfMovement;
+    public static int steps;
+
+    public static void MoveForward(int count, float speed)
+    {
+        steps = steps + count;
+        IsMoving = true;
+        NameOfMovement = "moving at " + str(speed);
+        println("moved " + str(count) + " step(s) at speed " + str(speed));
+    }
+
+    public static void Stop()
+    {
+        IsMoving = false;
+        NameOfMovement = "stopped";
+    }
+}
+
+var dir = Movement.Run;
+println($"dir = {dir}, value = {dir.value}, name = {dir.name}");
+
+switch (dir)
+{
+    case Movement.Idle: println("standing still"); break;
+    case Movement.Run:  println("running!"); break;
+    default:            println("unknown movement");
+}
+
+Movement.MoveForward(3, 2.5);
+println($"steps={Movement.steps} moving={Movement.IsMoving} status={Movement.NameOfMovement}");
+Movement.Stop();
+println($"after stop: {Movement.NameOfMovement}, moving={Movement.IsMoving}");
+
+// ============================================================
+// 2. PROPERTIES WITH get / set
+// ============================================================
+class Account
+{
+    var balance = 100.0;
+    var owner = "ada";
+
+    // auto-implemented property (implicit backing field)
+    var level { get; set; }
+
+    // computed property with a real getter and setter
+    var doubled
+    {
+        get { return this.balance * 2; }
+        set { this.balance = value / 2; }
+    }
+}
+
+var acct = new Account();
+acct.level = 3;
+println($"acct: {acct.owner} level={acct.level} balance={acct.balance} doubled={acct.doubled}");
+acct.doubled = 500.0;                       // routes through the setter
+println($"after doubled=500 -> balance={acct.balance}");
+
+// ============================================================
+// 3. OPERATOR OVERLOADING
+// ============================================================
+class Vector
+{
+    var x = 0;
+    var y = 0;
+
+    func init(int px, int py)
+    {
+        this.x = px;
+        this.y = py;
+    }
+
+    public Vector operator +(Vector a, Vector b)
+    {
+        return new Vector(a.x + b.x, a.y + b.y);
+    }
+
+    public Vector operator -(Vector a, Vector b)
+    {
+        return new Vector(a.x - b.x, a.y - b.y);
+    }
+
+    public bool operator ==(Vector a, Vector b)
+    {
+        return a.x == b.x && a.y == b.y;
+    }
+
+    public bool operator !=(Vector a, Vector b)
+    {
+        return !(a == b);
+    }
+
+    func show()
+    {
+        return "(" + str(this.x) + ", " + str(this.y) + ")";
+    }
+}
+
+var v1 = new Vector(1, 2);
+var v2 = new Vector(3, 4);
+var v3 = v1 + v2;
+println($"v1 + v2 = {v3.show()}");
+println($"v2 - v1 = {(v2 - v1).show()}");
+println($"v1 == v2 -> {v1 == v2}, v1 == new Vector(1, 2) -> {v1 == new Vector(1, 2)}");
+println($"v1 != v2 -> {v1 != v2}");
+
+// ============================================================
+// 4. DELEGATES, LAMBDAS AND EVENTS
+// ============================================================
+delegate int Mapper(int value);
+delegate void Notifier(string message);
+
+event Notifier OnAlert;                     // top-level event
+
+func Double(int x) { return x * 2; }
+
+Mapper map = Double;                        // method group -> delegate
+println($"map(21) = {map(21)}");
+
+map = (int x) => x + 1;                     // lambda -> delegate
+println($"map(41) = {map(41)}");
+
+var compose = (int a, int b) => { return a * 10 + b; };
+println($"compose(3, 4) = {compose(3, 4)}");
+
+func HandleAlert(string msg) { println($"[alert] {msg}"); }
+func HandleAlert2(string msg) { println($"[alert2] {msg}"); }
+
+OnAlert += HandleAlert;
+OnAlert += HandleAlert2;
+OnAlert("system reboot in 5s");             // multicast: both handlers run
+OnAlert -= HandleAlert;
+OnAlert("second broadcast");                // only HandleAlert2 runs
+
+// events on instances too
+class Button
+{
+    event Notifier OnClick;
+
+    func Fire()
+    {
+        this.OnClick("button was clicked");
+    }
+}
+
+var btn = new Button();
+btn.OnClick += HandleAlert;
+btn.Fire();
+
+// ============================================================
+// 5. EXTRA LANGUAGE FEATURES
+// ============================================================
+// string interpolation
+var lang = "Nexus";
+var major = 2;
+println($"{lang} v{major}: interpolation + {5 * 8} + {lang.upper()}");
+
+// null-coalescing and null-conditional
+string maybeNull = null;
+var fallbackValue = maybeNull ?? "fallback";
+println($"maybeNull ?? 'fallback' -> {fallbackValue}");
+
+var data = [1, 2, 3];
+println($"data?.count = {data?.count}");
+var nothing = null;
+println($"nothing?.count = {nothing?.count}");
+
+// typed declarations with defaults
+int total = 0;
+bool ready = true;
+float ratio = 0.5;
+string greeting;
+println($"total={total} ready={ready} ratio={ratio} greeting='{greeting}'");
+
+// foreach over a list (works in the bytecode VM too)
+var sum = 0;
+foreach (var item in [10, 20, 30])
+    sum = sum + item;
+println($"foreach sum = {sum}");
+
+println("=== done ===");
