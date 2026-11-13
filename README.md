@@ -1,4 +1,4 @@
-## Note: This Project was made using GLM 5.3-flash and while yes, I did use AI. I also cleaned up and helped fix a few bugs but most of the work was from GLM 5.3-flash. this is 1.0 Expect bugs as this language might be studied or used by Xeo Project to make an SDK.
+## Note: This Project was made using GLM 5.3-flash, you may study, use it or fork it as long as it retains the MIT license
 
 # Nexus Language v1.2.0
 
